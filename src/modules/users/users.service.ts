@@ -22,28 +22,28 @@ export class UsersService {
       password: hashedPassword,
     });
     const savedUser = await this.usersRepository.save(newUser);
-    return {
+    return new ApiResponse<User>({
       message: 'User created successfully',
       data: savedUser,
-    };
+    });
   }
 
   async findAllUsers(): Promise<ApiResponse<User[]>> {
     const users = await this.usersRepository.find();
-    return {
+    return new ApiResponse<User[]>({
       message:
         users.length > 0 ? 'Users retrieved successfully' : 'No users found',
       data: users,
-    };
+    });
   }
 
   async findUserById(id: string): Promise<ApiResponse<User>> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) throw new NotFoundException(`User with ID ${id} not found`);
-    return {
+    return new ApiResponse<User>({
       message: 'User retrieved successfully',
       data: user,
-    };
+    });
   }
 
   async updateUser(
@@ -52,12 +52,19 @@ export class UsersService {
   ): Promise<ApiResponse<User>> {
     const userResponse = await this.findUserById(id);
     const user = userResponse.data;
+
+    // Hash the password if provided
+    if (updateUserDto.password) {
+      const salt = await bcrypt.genSalt();
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, salt);
+    }
+
     Object.assign(user, updateUserDto);
     const updatedUser = await this.usersRepository.save(user);
-    return {
+    return new ApiResponse<User>({
       message: 'User updated successfully',
       data: updatedUser,
-    };
+    });
   }
 
   async deleteUser(id: string): Promise<ApiResponse<boolean>> {
@@ -65,9 +72,9 @@ export class UsersService {
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return {
+    return new ApiResponse<boolean>({
       message: 'User deleted successfully',
       data: true,
-    };
+    });
   }
 }

@@ -13,7 +13,7 @@ const mockUser = {
   id: '1a2b3c4d',
   full_name: 'John Doe',
   email: 'johndoe@example.com',
-  password: 'hashedPassword123', // Hashed password
+  password: 'hashedPassword123',
   role: UserRole.ADMIN,
   created_at: new Date(),
   updated_at: new Date(),
@@ -158,8 +158,8 @@ describe('UsersService', () => {
       const updateUserDto: UpdateUserDto = { full_name: 'Jane Doe' };
       const updatedUser = { ...mockUser, ...updateUserDto };
 
-      repository.findOne.mockResolvedValueOnce(mockUser); // For findUserById
-      repository.save.mockResolvedValueOnce(updatedUser); // For save
+      repository.findOne.mockResolvedValueOnce(mockUser);
+      repository.save.mockResolvedValueOnce(updatedUser);
 
       const result = await service.updateUser('1a2b3c4d', updateUserDto);
 
@@ -173,6 +173,26 @@ describe('UsersService', () => {
       });
       // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.save).toHaveBeenCalledWith(updatedUser);
+    });
+
+    it('should hash password if provided and update the user', async () => {
+      const updateUserDto: UpdateUserDto = { password: 'newpassword123' };
+      const updatedUser = { ...mockUser, password: 'hashedPassword123' };
+
+      repository.findOne.mockResolvedValueOnce(mockUser);
+      repository.save.mockResolvedValueOnce(updatedUser);
+
+      const result = await service.updateUser('1a2b3c4d', updateUserDto);
+
+      expect(result).toEqual({
+        message: 'User updated successfully',
+        data: updatedUser,
+      });
+      expect(bcrypt.hash).toHaveBeenCalledWith('newpassword123', 'salt');
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ password: 'hashedPassword123' }),
+      );
     });
 
     it('should throw NotFoundException when updating a non-existent user', async () => {
