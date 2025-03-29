@@ -1,4 +1,34 @@
 {
+  "semi": true,
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "printWidth": 80,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "proseWrap": "preserve",
+  "quoteProps": "as-needed",
+  "useTabs": false,
+  "parser": "typescript",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 80
+      }
+    },
+    {
+      "files": "*.md",
+      "options": {
+        "proseWrap": "always"
+      }
+    },
+    {
+      "files": "*.ts",
+      "options": {
+        "printWidth": 80
+      }
+    }
+  ]
 }
