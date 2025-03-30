@@ -4,19 +4,19 @@ import {
   ApiResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { ApiResponse as ApiResponseType } from '../../../shared/types/response.type';
+import { ApiResponse as ApiResponseType } from 'src/shared/types/response.type';
 
-export const DeleteUserByIdDocs = {
+export const DeleteProductByIdDocs = {
   delete: () =>
     applyDecorators(
-      ApiOperation({ summary: 'Delete a user by ID' }),
+      ApiOperation({ summary: 'Delete a product by ID' }),
       ApiResponse({
         status: 200,
-        description: 'User deleted successfully',
+        description: 'Product deleted successfully',
         type: () => ApiResponseType<boolean>,
       }),
       ApiNotFoundResponse({
-        description: 'User not found',
+        description: 'Product not found',
       }),
     ),
 };

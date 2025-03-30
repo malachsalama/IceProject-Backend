@@ -5,20 +5,20 @@ import {
   ApiNotFoundResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { ApiResponse as ApiResponseType } from '../../../shared/types/response.type';
-import { User } from '../entities/user.entity';
+import { ApiResponse as ApiResponseType } from 'src/shared/types/response.type';
+import { Product } from '../entities/product.entity';
 
-export const UpdateUserByIdDocs = {
+export const UpdateProductByIdDocs = {
   update: () =>
     applyDecorators(
-      ApiOperation({ summary: 'Update a user by ID' }),
+      ApiOperation({ summary: 'Update a product by ID' }),
       ApiResponse({
         status: 200,
-        description: 'User updated successfully',
-        type: () => ApiResponseType<User>,
+        description: 'Product updated successfully',
+        type: () => ApiResponseType<Product>,
       }),
       ApiNotFoundResponse({
-        description: 'User not found',
+        description: 'Product not found',
       }),
       ApiBadRequestResponse({
         description: 'Bad Request - Invalid or missing data',

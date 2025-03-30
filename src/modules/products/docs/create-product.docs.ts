@@ -4,17 +4,17 @@ import {
   ApiResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { ApiResponse as ApiResponseType } from '../../../shared/types/response.type';
-import { User } from '../entities/user.entity';
+import { ApiResponse as ApiResponseType } from 'src/shared/types/response.type';
+import { Product } from '../entities/product.entity';
 
-export const CreateUserDocs = {
+export const CreateProductDocs = {
   create: () =>
     applyDecorators(
-      ApiOperation({ summary: 'Create a new user' }),
+      ApiOperation({ summary: 'Create a new product' }),
       ApiResponse({
         status: 201,
-        description: 'User created successfully',
-        type: () => ApiResponseType<User>,
+        description: 'Product created successfully',
+        type: () => ApiResponseType<Product>,
       }),
       ApiBadRequestResponse({
         description: 'Bad Request - Invalid or missing data',

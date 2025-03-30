@@ -4,7 +4,7 @@ import {
   ApiResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { ApiResponse as ApiResponseType } from '../types/response.type';
+import { ApiResponse as ApiResponseType } from '../../../shared/types/response.type';
 import { User } from '../entities/user.entity';
 
 export const GetUserByIdDocs = {

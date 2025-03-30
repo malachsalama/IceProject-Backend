@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ApiResponse as ApiResponseType } from '../types/response.type';
+import { ApiResponse as ApiResponseType } from '../../../shared/types/response.type';
 import { User } from '../entities/user.entity';
 
 export const GetAllUsersDocs = {
