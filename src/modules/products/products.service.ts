@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiResponse } from 'src/shared/types/response.type';
+import { ApiResponse } from '../../shared/types/response.type';
 
 @Injectable()
 export class ProductsService {
