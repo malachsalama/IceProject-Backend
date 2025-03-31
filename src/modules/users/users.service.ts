@@ -46,6 +46,17 @@ export class UsersService {
     });
   }
 
+  async findUserByEmail(email: string): Promise<ApiResponse<User>> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return new ApiResponse<User>({
+      message: 'User retrieved successfully',
+      data: user,
+    });
+  }
+
   async updateUser(
     id: string,
     updateUserDto: UpdateUserDto,
