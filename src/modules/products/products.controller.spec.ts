@@ -18,6 +18,7 @@ describe('ProductsController', () => {
     stock: 50,
     created_at: new Date(),
     updated_at: new Date(),
+    saleItems: [],
   };
 
   const mockService = {
