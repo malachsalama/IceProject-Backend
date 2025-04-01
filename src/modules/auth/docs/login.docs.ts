@@ -4,7 +4,7 @@ import {
   ApiResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { LoginResponseDto } from '../dto/login-response.dto';
+import { ApiResponse as ApiResponseType } from '../../../shared/types/response.type';
 
 export const LoginDocs = {
   login: () =>
@@ -13,7 +13,7 @@ export const LoginDocs = {
       ApiResponse({
         status: 201,
         description: 'User logged in successfully',
-        type: LoginResponseDto,
+        type: ApiResponseType,
       }),
       ApiUnauthorizedResponse({
         description: 'Unauthorized - Invalid credentials',
