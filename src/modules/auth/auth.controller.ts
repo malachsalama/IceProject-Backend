@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
+import { ApiResponse } from '../../shared/types/response.type';
 import { ApiTags } from '@nestjs/swagger';
 import { LoginDocs } from './docs/login.docs';
 
@@ -13,7 +13,9 @@ export class AuthController {
   @Post('login')
   @HttpCode(201)
   @LoginDocs.login()
-  async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
+  async login(
+    @Body() loginDto: LoginDto,
+  ): Promise<ApiResponse<{ access_token: string }>> {
     return this.authService.login(loginDto);
   }
 }

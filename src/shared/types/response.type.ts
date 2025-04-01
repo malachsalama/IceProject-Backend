@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class ApiResponse<T> {
   @ApiProperty({
     description: 'Message describing the result of the operation',
-    example: 'User operation successful',
+    example: 'Successful',
   })
   message: string;
 
