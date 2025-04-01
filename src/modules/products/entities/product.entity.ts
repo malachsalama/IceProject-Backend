@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { SaleItem } from '../../../modules/sales/entities/sale-item.entity';
 
 @Entity('products')
 export class Product {
@@ -25,7 +27,7 @@ export class Product {
 
   @ApiProperty({
     description: 'Stock Keeping Unit (SKU) for the product',
-    example: 'LAP-001',
+    example: 'LAP001',
   })
   @Column({ unique: true })
   sku: string;
@@ -43,6 +45,9 @@ export class Product {
   })
   @Column('int')
   stock: number;
+
+  @OneToMany(() => SaleItem, (saleItem) => saleItem.product)
+  saleItems: SaleItem[];
 
   @ApiProperty({
     description: 'Timestamp when the product was created',
