@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { SaleItem } from '../../../modules/sales/entities/sale-item.entity';
+import { PurchaseOrderItem } from '../../../modules/purchases/entities/purchase-order-item.entity';
 
 @Entity('products')
 export class Product {
@@ -48,6 +49,12 @@ export class Product {
 
   @OneToMany(() => SaleItem, (saleItem) => saleItem.product)
   saleItems: SaleItem[];
+
+  @OneToMany(
+    () => PurchaseOrderItem,
+    (purchaseOrderItem) => purchaseOrderItem.product,
+  )
+  purchaseOrderItems: PurchaseOrderItem[];
 
   @ApiProperty({
     description: 'Timestamp when the product was created',
