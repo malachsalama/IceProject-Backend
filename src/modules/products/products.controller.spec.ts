@@ -1,4 +1,3 @@
-// src/products/products.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
@@ -20,6 +19,7 @@ describe('ProductsController', () => {
     updated_at: new Date(),
     saleItems: [],
     purchaseOrderItems: [],
+    inventoryAdjustments: [],
   };
 
   const mockService = {
