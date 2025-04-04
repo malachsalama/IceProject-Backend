@@ -20,7 +20,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../users/entities/user.enums';
 
-@ApiTags('sales')
+@ApiTags('Sales')
 @Controller('sales')
 @ApiBearerAuth()
 export class SalesController {

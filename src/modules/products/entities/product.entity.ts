@@ -9,6 +9,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { SaleItem } from '../../../modules/sales/entities/sale-item.entity';
 import { PurchaseOrderItem } from '../../../modules/purchases/entities/purchase-order-item.entity';
+import { InventoryAdjustment } from '../../../modules/inventory/entities/inventory-adjustment.entity';
 
 @Entity('products')
 export class Product {
@@ -55,6 +56,12 @@ export class Product {
     (purchaseOrderItem) => purchaseOrderItem.product,
   )
   purchaseOrderItems: PurchaseOrderItem[];
+
+  @OneToMany(
+    () => InventoryAdjustment,
+    (inventoryAdjustment) => inventoryAdjustment.product,
+  )
+  inventoryAdjustments: InventoryAdjustment[];
 
   @ApiProperty({
     description: 'Timestamp when the product was created',
