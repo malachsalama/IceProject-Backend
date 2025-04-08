@@ -16,9 +16,9 @@ import { ReportsModule } from './modules/reports/reports.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(AppDataSource.options),
+    AuthModule,
     UsersModule,
     ProductsModule,
-    AuthModule,
     SalesModule,
     PurchasesModule,
     InventoryModule,
