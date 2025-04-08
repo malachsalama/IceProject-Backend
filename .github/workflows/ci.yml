@@ -38,7 +38,10 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
-      - name: Run Tests
+      - name: Build Application
+        run: npm run build
+
+      - name: Run Migrations and Tests
         env:
           DATABASE_HOST: localhost
           DATABASE_PORT: 5432
@@ -46,10 +49,7 @@ jobs:
           DATABASE_PASSWORD: test_password
           DATABASE_NAME: test_db
           JWT_SECRET: test_jwt_secret
-        run: npm run migration:run && npm run test
-
-      - name: Build Application
-        run: npm run build
+        run: npm run migration:run && npm run test     
 
       - name: Start Application
         env:
