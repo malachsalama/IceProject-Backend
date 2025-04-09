@@ -8,65 +8,60 @@ jobs:
   quality-assurance:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: ${{ secrets.DB_USERNAME }}
+      DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DATABASE_NAME: ${{ secrets.DB_NAME }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      PORT: 3000
+
     services:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
+          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U ${{ secrets.DB_USERNAME }}"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     steps:
-      - name: Checkout Code
+      - name: 📦 Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: Install Dependencies
+      - name: 📥 Install Dependencies
         run: npm ci
 
-      - name: Run Lint
+      - name: 🧹 Run Lint
         run: npm run lint
 
-      - name: Build Application
+      - name: 🔨 Build Application
         run: npm run build
 
-      - name: Run Migrations and Tests
-        env:
-          DATABASE_HOST: localhost
-          DATABASE_PORT: 5432
-          DATABASE_USER: test_user
-          DATABASE_PASSWORD: test_password
-          DATABASE_NAME: test_db
-          JWT_SECRET: test_jwt_secret
-        run: npm run migration:run && npm run test     
+      - name: 🧪 Run Migrations and Tests
+        run: npm run migration:run && npm run test
 
-      - name: Start Application
-        env:
-          DATABASE_HOST: localhost
-          DATABASE_PORT: 5432
-          DATABASE_USER: test_user
-          DATABASE_PASSWORD: test_password
-          DATABASE_NAME: test_db
-          JWT_SECRET: test_jwt_secret
-          PORT: 3000
+      # Optional runtime check
+      - name: 🚀 Start Application (Background)
         run: npm run start:prod > app.log 2>&1 &
 
-      - name: Wait for Application to Start
+      - name: ⏳ Wait for Application to Start
         run: |
           for i in $(seq 1 30); do
             sleep 3
-            if grep -q "Application is running on" app.log; then
+            if grep -q "Nest application successfully started" app.log; then
               echo "✅ Application successfully started!"
               break
             fi
@@ -77,11 +72,11 @@ jobs:
             fi
           done
 
-      - name: Perform Health Check
+      - name: ✅ Perform Health Check
         run: |
           MAX_RETRIES=5
           RETRY_COUNT=0
-          HEALTH_CHECK_URL="http://localhost:3000/health"
+          HEALTH_CHECK_URL="http://localhost:${PORT}/health"
 
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_CHECK_URL)
