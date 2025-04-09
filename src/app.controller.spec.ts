@@ -15,8 +15,16 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return Hello World message object', () => {
+      expect(appController.getHello()).toEqual({ message: 'Hello World!' });
+    });
+  });
+
+  describe('health', () => {
+    it('should return health status object', () => {
+      expect(appController.health()).toEqual({
+        message: 'This is an healthy endpoint',
+      });
     });
   });
 });
