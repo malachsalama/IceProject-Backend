@@ -25,6 +25,7 @@
     "migration:run": "npx typeorm-ts-node-commonjs migration:run -d dist/database/data-source",
     "migration:rollback": "npx typeorm-ts-node-commonjs migration:revert -d dist/database/data-source",
     "seed": "node dist/database/seeds/seed.js",
+    "deploy:setup": "npm run migration:run && npm run seed",
     "version:update": "npm --no-git-tag-version version patch && git add package.json"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.7",
+    "husky": "^9.1.7",
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

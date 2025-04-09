@@ -1,0 +1,97 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: ['dev', 'staging', 'prod']
+
+jobs:
+  quality-assurance:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      PORT: 3000
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 📥 Install Dependencies
+        run: npm ci
+
+      - name: 🧹 Run Lint
+        run: npm run lint
+
+      - name: 🔨 Build Application
+        run: npm run build
+
+      - name: 🧪 Run Migrations and Tests
+        run: npm run migration:run && npm run test
+
+      - name: 🚀 Start Application (Background)
+        run: npm run start:prod > app.log 2>&1 &
+
+      - name: ⏳ Wait for Application to Start
+        run: |
+          for i in $(seq 1 30); do
+            sleep 3
+            if grep -q "Nest application successfully started" app.log; then
+              echo "✅ Application successfully started!"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "❌ Application failed to start within 90 seconds!"
+              cat app.log
+              exit 1
+            fi
+          done
+
+      - name: ✅ Perform Health Check
+        run: |
+          MAX_RETRIES=5
+          RETRY_COUNT=0
+          HEALTH_CHECK_URL="http://localhost:${PORT}/health"
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_CHECK_URL)
+            if [ "$RESPONSE" -eq 200 ]; then
+              echo "✅ Health check passed! Application is up and running."
+              break
+            else
+              echo "Health check attempt $((RETRY_COUNT+1))/$MAX_RETRIES failed with status code: $RESPONSE"
+              RETRY_COUNT=$((RETRY_COUNT+1))
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                echo "Retrying in 5 seconds..."
+                sleep 5
+              else
+                echo "❌ Application health check failed after $MAX_RETRIES attempts!"
+                cat app.log
+                exit 1
+              fi
+            fi
+          done

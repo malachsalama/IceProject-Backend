@@ -1,0 +1,27 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches: ['dev']
+
+jobs:
+  deploy-to-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Notify Render Deployment
+        run: echo "Render will auto-deploy from the dev branch."
